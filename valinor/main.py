@@ -13,37 +13,92 @@
 # limitations under the License.
 
 import logging
-from .export import *
+import argparse
+import os
+import sys
+import pkg_resources
+
+from . import logging_setup
+from . import tool
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
-    # Should be launched from root/tools but all scripts are referenced to root
-    root = os.path.normpath(os.getcwd() + default_settings.PROJECT_ROOT)
-    os.chdir(root)
-    logging.debug('This should be the project root: %s', os.getcwd())
+    logging_setup.init()
 
-    # Parse Options
-    parser = OptionParser()
-    parser.add_option("-f", "--file", help="YAML projects file")
-    parser.add_option("-p", "--project", help="Project to be generated")
-    parser.add_option(
-        "-t", "--tool", help="Create project files for provided tool (uvision by default)")
-    parser.add_option("-l", "--list", action="store_true",
-                      help="List projects defined in the project file.")
-    parser.add_option(
-        "-b", "--build", action="store_true", help="Build defined projects.")
+    p = argparse.ArgumentParser()
 
-    (options, args) = parser.parse_args()
+    p.add_argument('--version', dest='show_version', action='version',
+        version=pkg_resources.require("valinor")[0].version,
+        help='display the version'
+    )
 
-    if not options.tool:
-        options.tool = "uvision"
+    p.add_argument('-t', '--tool', dest='ide_tool', default=None,
+        help='Debug tool (IDE) to generate for. If omitted, a debug project '+
+             'will be generated for an IDE detected on your system, '+
+             'defaulting to opening a GDB debug session, if no known IDEs '+
+             'are detected'
+    )
 
-    # Generate projects
-    generator = ProjectGenerator()
-    generator.set_toolchain(options)
-    projects, project_paths = generator.run(options)
+    p.add_argument('-n', '--no-open', dest='start_session', default=True, action='store_false',
+        help='Do not open the debug session, just generate the necessary '+
+             'files to enable debugging, and print the command that would be '+
+             'necessary to proceed.'
+    )
+    
+    p.add_argument('--target', dest='target', required=True,
+        help='The target board to generate a project file for (e.g. K64F).'
+    )
 
-    # Build all exported projects
-    if options.build:
-        ProjectBuilder().run(options, projects, project_paths)
+    p.add_argument('executable',
+        help='Path to the executable to debug.'
+    )
 
+    args = p.parse_args()
+
+    # check that the executable exists before we proceed, so we get a nice
+    # error message if it doesn't
+    if not os.path.isfile(args.executable):
+        logging.error('cannot debug file "%s" that does not exist' % args.executable)
+        sys.exit(1)
+
+    
+    ide_tool = args.ide_tool
+    if not tool:
+        # !!! TODO: installed IDE detection
+        ide_tool = 'gdb'
+
+    file_name      = os.path.split(args.executable)[1]
+    file_base_name = os.path.splitext(file_name)[0]
+    working_dir    = os.path.dirname(args.executable)
+
+    # project_generator code expects to work in CWD:
+    os.chdir(working_dir)
+
+    # pass empty data to the tool for things we don't care about when just
+    # debugging (in the future we could add source files by reading the debug
+    # info from the file being debugged)
+    projectfile_path = tool.export({
+            'name': file_base_name,     # project name
+            'core': '',                 # core
+            'linker_file': '',          # linker command file
+            'include_paths': [],        # include paths
+            'source_paths': [],         # source paths
+            'source_files_c': [],       # c source files
+            'source_files_cpp': [],     # c++ source files
+            'source_files_s': [],       # assembly source files
+            'source_files_obj': [],     # object files
+            'source_files_lib': [],     # libraries
+            'macros': [],               # macros (defines)
+            'project_dir': {
+                'name': file_base_name,
+                'path' : working_dir
+            },
+            'misc': [],
+            'mcu': args.target
+        },
+        ide_tool
+    )
+    print projectfile_path
+
+    if args.start_session:
+        # !!! TODO: open the selected IDE on the generated files
+        pass

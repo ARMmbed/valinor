@@ -119,6 +119,8 @@ class uVisionDefinitions():
             }
         },
     }
+    # alias mbed standard names to their CPUs:
+    mcu_def['K64F'] = mcu_def['MK64FN1M0xxx12']
 
     uvision_settings = {
         # C/C++ settings

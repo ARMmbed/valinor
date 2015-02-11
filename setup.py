@@ -16,7 +16,7 @@ setup(
     author_email = "c0170@rocketmail.com, matthewelse1997@gmail.com, James.Crosby@arm.com",
     description = ("Generate IDE project files to debug ELF files."),
     license = "Apache-2.0",
-    keywords = "embedded package module dependency management",
+    keywords = "debug c cpp project generator embedded",
     url = "about:blank",
     packages=find_packages(),
     package_data={
@@ -39,6 +39,7 @@ setup(
         'pyyaml>=3,<4',
         'Jinja2>=2.7.0,<3',
         'setuptools>=12',
+        'colorama>=0.3,<0.4',
     ],
     test_requires=[
         'nose',
