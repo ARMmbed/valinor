@@ -39,5 +39,8 @@ setup(
         'pyyaml>=3,<4',
         'Jinja2>=2.7.0,<3',
         'setuptools>=12',
+    ],
+    test_requires=[
+        'nose',
     ]
 )
