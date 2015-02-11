@@ -12,9 +12,9 @@ def read(fname):
 setup(
     name = "valinor",
     version = "0.0.0",
-    author = "James Crosby",
-    author_email = "James.Crosby@arm.com",
-    description = ("Re-usable components for embedded software."),
+    author = 'Martin Kojtal, Matthew Else, James Crosby',
+    author_email = "c0170@rocketmail.com, matthewelse1997@gmail.com, James.Crosby@arm.com",
+    description = ("Generate IDE project files to debug ELF files."),
     license = "Apache-2.0",
     keywords = "embedded package module dependency management",
     url = "about:blank",
