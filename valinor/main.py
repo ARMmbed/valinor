@@ -23,6 +23,7 @@ from project_generator import tool
 
 def main():
     logging_setup.init()
+    logging.getLogger().setLevel(logging.WARNING)
 
     p = argparse.ArgumentParser()
 
@@ -36,6 +37,11 @@ def main():
              'will be generated for an IDE detected on your system, '+
              'defaulting to opening a GDB debug session, if no known IDEs '+
              'are detected'
+    )
+
+    p.add_argument('-d', '--project-dir', dest='project_dir', default=None,
+        help='The directory in which to generate any necessary project files.  '+
+             'Defaults to the directory of the executable argument.'
     )
 
     p.add_argument('-n', '--no-open', dest='start_session', default=True, action='store_false',
@@ -68,34 +74,44 @@ def main():
 
     file_name      = os.path.split(args.executable)[1]
     file_base_name = os.path.splitext(file_name)[0]
-    working_dir    = os.path.dirname(args.executable)
+    executable_dir = os.path.dirname(args.executable)
+
+    projectfile_dir = args.project_dir or executable_dir
 
     # pass empty data to the tool for things we don't care about when just
     # debugging (in the future we could add source files by reading the debug
     # info from the file being debugged)
-    projectfile_path = tool.export({
-            'name': file_base_name,     # project name
-            'core': '',                 # core
-            'linker_file': '',          # linker command file
-            'include_paths': [],        # include paths
-            'source_paths': [],         # source paths
-            'source_files_c': [],       # c source files
-            'source_files_cpp': [],     # c++ source files
-            'source_files_s': [],       # assembly source files
-            'source_files_obj': [],     # object files
-            'source_files_lib': [],     # libraries
-            'macros': [],               # macros (defines)
-            'project_dir': {
-                'name': '.',
-                'path' : working_dir
-            },
-            'misc': [],
-            'mcu': args.target
+    data = {
+        'name': file_base_name,     # project name
+        'core': '',                 # core
+        'linker_file': '',          # linker command file
+        'include_paths': [],        # include paths
+        'source_paths': [],         # source paths
+        'source_files_c': [],       # c source files
+        'source_files_cpp': [],     # c++ source files
+        'source_files_s': [],       # assembly source files
+        'source_files_obj': [],     # object files
+        'source_files_lib': [],     # libraries
+        'macros': [],               # macros (defines)
+        'project_dir': {
+            'name': '.' + os.path.sep,
+            'path' : projectfile_dir
         },
-        ide_tool
-    )
-    print projectfile_path
+        'output_dir': os.path.relpath(executable_dir, projectfile_dir) + os.path.sep,
+        'misc': [],
+        'mcu': args.target
+    }
+    
+    # generate debug project files (if necessary)
+    projectfile_path = tool.export(data, ide_tool)
+    
+    # perform any modifications to the executable itself that are necessary to
+    # debug it (for example, to debug an ELF with Keil uVision, it must be
+    # renamed to have the .axf extension)
+    tool.fixupExecutable(args.executable, ide_tool)
 
     if args.start_session:
-        # !!! TODO: open the selected IDE on the generated files
-        pass
+        tool.launch()
+    else:
+        print 'project files have been generated in:', os.path.normpath(projectfile_path)
+
