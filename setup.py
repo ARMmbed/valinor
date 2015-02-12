@@ -34,14 +34,14 @@ setup(
             "valinor=valinor:main",
         ],
     },
-    test_suite = 'valinor.test',
+    test_suite = 'nose.collector',
     install_requires=[
         'pyyaml>=3,<4',
         'Jinja2>=2.7.0,<3',
         'setuptools>=12',
         'colorama>=0.3,<0.4',
     ],
-    test_requires=[
+    tests_require=[
         'nose',
     ]
 )
