@@ -70,11 +70,6 @@ def main():
     file_base_name = os.path.splitext(file_name)[0]
     working_dir    = os.path.dirname(args.executable)
 
-    print "working dir:", working_dir
-
-    # project_generator code expects to work in CWD:
-    os.chdir(working_dir)
-
     # pass empty data to the tool for things we don't care about when just
     # debugging (in the future we could add source files by reading the debug
     # info from the file being debugged)
