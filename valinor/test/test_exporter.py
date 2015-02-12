@@ -17,7 +17,7 @@ from os.path import abspath
 import sys
 
 # Enable us to import all of the other code.
-from valinor.builder import Builder
+from valinor.project_generator.builder import Builder
 
 
 # Makes sure that exporting using generic builder will fail.

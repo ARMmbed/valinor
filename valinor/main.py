@@ -19,7 +19,7 @@ import sys
 import pkg_resources
 
 from . import logging_setup
-from . import tool
+from project_generator import tool
 
 def main():
     logging_setup.init()
@@ -69,6 +69,8 @@ def main():
     file_name      = os.path.split(args.executable)[1]
     file_base_name = os.path.splitext(file_name)[0]
     working_dir    = os.path.dirname(args.executable)
+
+    print "working dir:", working_dir
 
     # project_generator code expects to work in CWD:
     os.chdir(working_dir)

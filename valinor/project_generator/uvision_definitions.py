@@ -126,7 +126,7 @@ class uVisionDefinitions():
         # C/C++ settings
         'Cads': {
             'interw': 0,   # Execute-only code
-            'Optim': 0,    # Optimization level
+            'Optim': [0],  # Optimization level
             'oTime': 0,    # Optimize for time
             'SplitLS': 0,  # Split load and store multiple
             'OneElfS': 0,  # One elf section per function

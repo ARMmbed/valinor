@@ -20,7 +20,7 @@ setup(
     url = "about:blank",
     packages=find_packages(),
     package_data={
-        'valinor': ['templates/*.tmpl']
+        'valinor': ['project_generator/templates/*.tmpl']
     },
     long_description=read('docs/pypi.txt'),
     classifiers=[
