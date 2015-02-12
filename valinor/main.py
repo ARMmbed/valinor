@@ -91,7 +91,7 @@ def main():
             'source_files_lib': [],     # libraries
             'macros': [],               # macros (defines)
             'project_dir': {
-                'name': file_base_name,
+                'name': '.',
                 'path' : working_dir
             },
             'misc': [],
