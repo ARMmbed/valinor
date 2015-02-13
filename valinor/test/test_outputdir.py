@@ -54,5 +54,27 @@ class TestCLIOutputDirectory(unittest.TestCase):
         runWithDir(os.path.join('somesubdir','anotherdir') + os.path.sep)
         self.assertTrue(os.path.isfile(os.path.join(self.workingdir, 'somesubdir', 'anotherdir', 'myexe.uvproj')))
 
+    def testARMNoneEABIGDB(self):
+        def runWithDir(d=None):
+            args = [
+                '--tool', 'arm_none_eabi_gdb',
+                '--target', 'K64F',
+                os.path.relpath(self.exe_path, self.workingdir),
+                '-n'
+            ]
+            if d:
+                args += ['-d', d]
+            out = self.runCheck(args)
+
+        runWithDir()
+        self.assertTrue(os.path.isfile(self.exe_path + '.gdbstartup'))
+
+        runWithDir('somesubdir')
+        self.assertTrue(os.path.isfile(os.path.join(self.workingdir, 'somesubdir', 'myexe.gdbstartup')))
+
+        runWithDir(os.path.join('somesubdir','anotherdir') + os.path.sep)
+        self.assertTrue(os.path.isfile(os.path.join(self.workingdir, 'somesubdir', 'anotherdir', 'myexe.gdbstartup')))
+
+
 
 
