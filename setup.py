@@ -42,6 +42,7 @@ setup(
         'Jinja2>=2.7.0,<3',
         'setuptools>=12',
         'colorama>=0.3,<0.4',
+        'pyOCD>=0.3',
     ],
     tests_require=[
         'nose',

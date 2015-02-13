@@ -107,11 +107,11 @@ class IARExporter(Exporter):
         expanded_dic['iar_settings'].update(
             self.definitions.get_mcu_definition(expanded_dic['mcu']))
 
-        self.gen_file('iar.ewp.tmpl', expanded_dic, '%s.ewp' %
+        project_path, ewp = self.gen_file('iar.ewp.tmpl', expanded_dic, '%s.ewp' %
                       data['name'], "iar", data['project_dir']['path'], data['project_dir']['name'])
-        project_path = self.gen_file('iar.eww.tmpl', expanded_dic, '%s.eww' %
+        project_path, eww = self.gen_file('iar.eww.tmpl', expanded_dic, '%s.eww' %
                       data['name'], "iar", data['project_dir']['path'], data['project_dir']['name'])
-        return project_path
+        return project_path, [ewp, eww]
 
 class IARBuilder(Builder):
 

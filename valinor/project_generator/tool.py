@@ -16,6 +16,8 @@ from gccarm import MakefileGccArmExporter, MakefileGccArmBuilder
 from iar import IARExporter, IARBuilder
 from coide import CoideExporter
 from eclipse import EclipseGnuARMExporter
+from gdb import GDBExporter
+from gdb import ARMNoneEABIGDBExporter
 
 EXPORTERS = {
     'uvision': UvisionExporter,
@@ -23,6 +25,8 @@ EXPORTERS = {
     'iar': IARExporter,
     'coide' : CoideExporter,
     'eclipse_make_gcc_arm' : EclipseGnuARMExporter,
+    'gdb' : GDBExporter,
+    'arm_none_eabi_gdb' : ARMNoneEABIGDBExporter,
 }
 
 BUILDERS = {
@@ -31,6 +35,9 @@ BUILDERS = {
     'iar': IARBuilder,
 }
 
+LAUNCHERS = {
+    'uvision': UvisionBuilder,
+}
 
 def export(data, tool):
     """ Invokes tool generator. """
@@ -39,13 +46,17 @@ def export(data, tool):
 
     Exporter = EXPORTERS[tool]
     exporter = Exporter()
-    project_path = exporter.generate(data)
-    return project_path
+    project_path, projectfiles = exporter.generate(data)
+    return project_path, projectfiles
 
-def fixupExecutable(executable_path, tool):
+def fixup_executable(executable_path, tool):
     """ Perform any munging of the executable necessary to debug it with the specified tool. """
     exporter = EXPORTERS[tool]()
-    exporter.fixupExecutable(executable_path)
+    return exporter.fixup_executable(executable_path)
+
+def target_supported(target, tool):
+    exporter = EXPORTERS[tool]()
+    return exporter.supports_target(target)
 
 def build(projects, project_path, tool):
     """ Invokes builder for specificed tool. """

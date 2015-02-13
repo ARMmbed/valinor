@@ -18,12 +18,13 @@ import os
 import sys
 import pkg_resources
 
-from . import logging_setup
+import logging_setup
+import ide_detection
 from project_generator import tool
 
 def main():
     logging_setup.init()
-    logging.getLogger().setLevel(logging.WARNING)
+    logging.getLogger().setLevel(logging.INFO)
 
     p = argparse.ArgumentParser()
 
@@ -68,9 +69,8 @@ def main():
 
     
     ide_tool = args.ide_tool
-    if not tool:
-        # !!! TODO: installed IDE detection
-        ide_tool = 'gdb'
+    if not ide_tool:
+        ide_tool = ide_detection.select(ide_detection.available(), args.target)
 
     file_name      = os.path.split(args.executable)[1]
     file_base_name = os.path.splitext(file_name)[0]
@@ -103,15 +103,20 @@ def main():
     }
     
     # generate debug project files (if necessary)
-    projectfile_path = tool.export(data, ide_tool)
+    projectfile_path, projectfiles = tool.export(data, ide_tool)
     
     # perform any modifications to the executable itself that are necessary to
     # debug it (for example, to debug an ELF with Keil uVision, it must be
     # renamed to have the .axf extension)
-    tool.fixupExecutable(args.executable, ide_tool)
+    executable = tool.fixup_executable(args.executable, ide_tool)
 
     if args.start_session:
-        tool.launch()
+        launch_fn = ide_detection.get_launcher(ide_tool)
+        if launch_fn is not None:
+            launch_fn(projectfiles, executable)
+        else:
+            logging.warning('failed to open IDE')
+            print 'project files have been generated in:', os.path.normpath(projectfile_path)
     else:
         print 'project files have been generated in:', os.path.normpath(projectfile_path)
 
