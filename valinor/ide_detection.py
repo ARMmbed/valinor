@@ -6,6 +6,7 @@
 
 import subprocess
 import logging
+import os
 
 from distutils.spawn import find_executable
 
@@ -21,23 +22,42 @@ IDE_Launchers = {
 
 IDEs_Scanned = False
 
+# preferred order of IDEs if multiple are available
+IDE_Preference = [
+    'uvision', 'arm_none_eabi_gdb', 'gdb'
+]
+
+
 logger = logging.getLogger('ide_detect')
 
-def _find_installed_program(programname):
-    # windows-specific version of find-in-path that looks in windowsy
-    # places... I guess the registry? Who knows.
-    # !!! TODO: use this: http://timgolden.me.uk/python/wmi/index.html
-    # !!! TODO: here's an example: http://www.blog.pythonlibrary.org/2010/03/03/finding-installed-software-using-python/
-    return None
+def _read_hklm_reg_value(key_path, value_name):
+    ''' read a value from a registry key under HKEY_LOCAL_MACHINE '''
+    if os.name != 'nt':
+        return None
+    import _winreg as winreg
 
+    k = None
+    value = None
+    try:
+        k = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, key_path)
+        v = winreg.QueryValueEx(k, value_name)
+        return v[0]
+    except WindowsError:
+        if k:
+            winreg.CloseKey(k)
+    return value
 
 def _find_uvision():
-    # first look for uvision 5, then uvision 4:
-    for uvision in ['Uv5', 'Uv4']:
-        found = find_executable('Uv5')
-        if found: return found
-        found = _find_installed_program('Uv5.exe')
-        if found: return found
+    found = find_executable('UV4')
+    if found: return found
+    if os.name == 'nt':
+        found_pathdir = _read_hklm_reg_value(r'Software\Keil\Products\MDK', 'Path')
+        if not found_pathdir:
+            found_pathdir = _read_hklm_reg_value(r'Software\Wow6432Node\Keil\Products\MDK', 'Path')
+        if found_pathdir:
+            found = os.path.join(found_pathdir, '..', 'UV4', 'UV4.exe')
+            if os.path.isfile(found):
+                return os.path.normpath(found)
     return None
 
 
@@ -56,6 +76,7 @@ def _uvision_launcher(uvision_exe):
         ]
         if len(uvproj) != 1:
             raise Exception('Exactly one project file must be provided')
+        logger.info("launching uvision: %s %s", uvision_exe, uvproj[0])
         child = subprocess.Popen(
             [uvision_exe, uvproj[0]],
         )
@@ -67,7 +88,6 @@ IDE_Scanners = {
                   'gdb': (_find_generic_gdb, gdb_launcher),
     'arm_none_eabi_gdb': (_find_arm_none_eabi_gdb, arm_none_eabi_gdb_launcher),
 }
-
 
 def _ensure_IDEs_scanned():
     global IDEs_Scanned, IDE_Launchers
@@ -82,6 +102,10 @@ def _ensure_IDEs_scanned():
         logger.debug('scanning for %s... %sfound', ide, ('not ', '')[bool(detected)])
         if detected:
             IDE_Launchers[ide] = launcher(detected)
+            # make sure we have a preference order for all detected IDEs, even
+            # if the list hasn't been updated:
+            if ide not in IDE_Preference:
+                IDE_Preference.append(ide)
 
     IDEs_Scanned = True
 
@@ -94,12 +118,12 @@ def available():
 
 def select(available_ides, target):
     ''' select the preferred option out of the available IDEs to debug the
-    selected target (actually just returns the first match), or None '''
+    selected target, or None '''
 
     possible_ides = [x for x in available_ides if tool.target_supported(target, x)]
 
     if len(possible_ides):
-        return possible_ides[0]
+        return sorted(possible_ides, key=lambda x:IDE_Preference.index(x))[0]
     else:
         return None
 
