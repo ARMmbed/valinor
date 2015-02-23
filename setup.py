@@ -22,7 +22,6 @@ setup(
     url = "about:blank",
     packages=find_packages(),
     package_data={
-        'valinor': ['project_generator/templates/*.tmpl']
     },
     long_description=read('docs/pypi.txt'),
     classifiers=[
@@ -42,7 +41,8 @@ setup(
         'Jinja2>=2.7.0,<3',
         'setuptools>=12',
         'colorama>=0.3,<0.4',
-        'pyOCD>=0.3',
+        'pyOCD>=0.3,<1.0',
+        'project_generator>=0.3,<1.0'
     ],
     tests_require=[
         'nose',

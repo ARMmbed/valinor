@@ -21,6 +21,7 @@ import pkg_resources
 import logging_setup
 import ide_detection
 from project_generator import tool
+from project_generator.settings import ProjectSettings
 
 def main():
     logging_setup.init()
@@ -103,7 +104,7 @@ def main():
     }
     
     # generate debug project files (if necessary)
-    projectfile_path, projectfiles = tool.export(data, ide_tool)
+    projectfile_path, projectfiles = tool.export(data, ide_tool, ProjectSettings())
     
     # perform any modifications to the executable itself that are necessary to
     # debug it (for example, to debug an ELF with Keil uVision, it must be
