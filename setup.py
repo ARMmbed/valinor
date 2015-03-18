@@ -13,7 +13,7 @@ def read(fname):
 
 setup(
     name = "valinor",
-    version = "0.0.1",
+    version = "0.0.2",
     author = 'Martin Kojtal, Matthew Else, James Crosby',
     author_email = "c0170@rocketmail.com, matthewelse1997@gmail.com, James.Crosby@arm.com",
     description = ("Generate IDE project files to debug ELF files."),
@@ -39,7 +39,7 @@ setup(
     install_requires=[
         'pyyaml>=3,<4',
         'Jinja2>=2.7.0,<3',
-        'setuptools>=12',
+        'setuptools',
         'colorama>=0.3,<0.4',
         'pyOCD>=0.3,<1.0',
         'project_generator>=0.3,<1.0'
