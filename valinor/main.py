@@ -21,7 +21,7 @@ import pkg_resources
 import logging_setup
 import ide_detection
 from project_generator import tool
-from project_generator.settings import ProjectSettings
+from project_generator.workspace import Workspace
 
 def main():
     logging_setup.init()
@@ -68,10 +68,9 @@ def main():
         logging.error('cannot debug file "%s" that does not exist' % args.executable)
         sys.exit(1)
 
-    
+    available_ides = ide_detection.available()
     ide_tool = args.ide_tool
     if not ide_tool:
-        available_ides = ide_detection.available()
         ide_tool = ide_detection.select(available_ides, args.target)
         if ide_tool is None:
             if len(available_ides):
@@ -114,9 +113,11 @@ def main():
         },
         'output_dir': os.path.relpath(executable_dir, projectfile_dir) + os.path.sep,
         'misc': [],
-        'mcu': args.target
+        'target': args.target
     }
-    
+    workspace = Workspace(None)
+    workspace.load_definitions()
+
     # generate debug project files (if necessary)
     projectfile_path, projectfiles = tool.export(data, ide_tool, ProjectSettings())
     if projectfile_path is None:
