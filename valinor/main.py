@@ -21,7 +21,7 @@ import pkg_resources
 import logging_setup
 import ide_detection
 from project_generator import tool
-from project_generator.workspace import Workspace
+from project_generator.settings import ProjectSettings
 
 def main():
     logging_setup.init()
