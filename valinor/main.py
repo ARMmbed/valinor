@@ -68,10 +68,12 @@ def main():
         logging.error('cannot debug file "%s" that does not exist' % args.executable)
         sys.exit(1)
 
+    project_settings = ProjectSettings()
+
     available_ides = ide_detection.available()
     ide_tool = args.ide_tool
     if not ide_tool:
-        ide_tool = ide_detection.select(available_ides, args.target)
+        ide_tool = ide_detection.select(available_ides, args.target, project_settings)
         if ide_tool is None:
             if len(available_ides):
                 logging.error('None of the detected IDEs supports "%s"', args.target)
@@ -119,7 +121,7 @@ def main():
     workspace.load_definitions()
 
     # generate debug project files (if necessary)
-    projectfile_path, projectfiles = tool.export(data, ide_tool, ProjectSettings())
+    projectfile_path, projectfiles = tool.export(data, ide_tool, project_settings)
     if projectfile_path is None:
         logging.error("failed to generate project files")
         sys.exit(1)
