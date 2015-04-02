@@ -25,6 +25,7 @@ def _launchPyOCDGDBServer(msg_queue):
     signal.signal(signal.SIGINT, _ignoreSignal);
     from pyOCD.gdbserver import GDBServer
     from pyOCD.board import MbedBoard
+    gdb = None
     try:
         board_selected = MbedBoard.chooseBoard()
         with board_selected as board:
