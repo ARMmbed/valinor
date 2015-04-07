@@ -120,8 +120,9 @@ def main():
     workspace = Workspace(None)
     workspace.load_definitions()
 
+    exporter = tool.ToolsSupported().get_value(ide_tool, 'exporter')
     # generate debug project files (if necessary)
-    projectfile_path, projectfiles = tool.export(data, ide_tool, project_settings)
+    projectfile_path, projectfiles = tool.export(exporter, data, ide_tool, project_settings)
     if projectfile_path is None:
         logging.error("failed to generate project files")
         sys.exit(1)
@@ -129,7 +130,7 @@ def main():
     # perform any modifications to the executable itself that are necessary to
     # debug it (for example, to debug an ELF with Keil uVision, it must be
     # renamed to have the .axf extension)
-    executable = tool.fixup_executable(args.executable, ide_tool)
+    executable = tool.fixup_executable(exporter, args.executable, ide_tool)
 
     if args.start_session:
         launch_fn = ide_detection.get_launcher(ide_tool)
