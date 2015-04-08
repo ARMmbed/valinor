@@ -71,7 +71,21 @@ def main():
     
     ide_tool = args.ide_tool
     if not ide_tool:
-        ide_tool = ide_detection.select(ide_detection.available(), args.target)
+        available_ides = ide_detection.available()
+        ide_tool = ide_detection.select(available_ides, args.target)
+        if ide_tool is None:
+            if len(available_ides):
+                logging.error('None of the detected IDEs supports "%s"', args.target)
+            else:
+                logging.error('No IDEs were detected on this system!')
+            logging.info('Searched for:\n  %s', '\n  '.join(ide_detection.IDE_Preference))
+    if ide_tool is None:
+        logging.error(
+            'No IDE tool available for target "%s". Please see '+
+            'https://github.com/0xc0170/project_generator for details '+
+            'on adding support.', args.target
+        )
+        sys.exit(1)
 
     file_name      = os.path.split(args.executable)[1]
     file_base_name = os.path.splitext(file_name)[0]
@@ -105,7 +119,10 @@ def main():
     
     # generate debug project files (if necessary)
     projectfile_path, projectfiles = tool.export(data, ide_tool, ProjectSettings())
-    
+    if projectfile_path is None:
+        logging.error("failed to generate project files")
+        sys.exit(1)
+
     # perform any modifications to the executable itself that are necessary to
     # debug it (for example, to debug an ELF with Keil uVision, it must be
     # renamed to have the .axf extension)
