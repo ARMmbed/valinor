@@ -120,7 +120,8 @@ def select(available_ides, target, project_settings):
     ''' select the preferred option out of the available IDEs to debug the
     selected target, or None '''
 
-    possible_ides = [x for x in available_ides if tool.target_supported(target, x, project_settings)]
+    possible_ides = [x for x in available_ides if tool.target_supported(
+        tool.ToolsSupported().get_value(x, 'exporter'), target, x, project_settings)]
 
     if len(possible_ides):
         return sorted(possible_ides, key=lambda x:IDE_Preference.index(x))[0]
