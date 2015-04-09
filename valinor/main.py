@@ -20,7 +20,7 @@ import pkg_resources
 
 import logging_setup
 import ide_detection
-from project_generator import tool
+from project_generator import tool, update
 from project_generator.settings import ProjectSettings
 
 def main():
@@ -69,8 +69,7 @@ def main():
         sys.exit(1)
 
     project_settings = ProjectSettings()
-
-    available_ides = ide_detection.available()
+    update.update(None, False, False, project_settings)
     ide_tool = args.ide_tool
     if not ide_tool:
         ide_tool = ide_detection.select(available_ides, args.target, project_settings)
