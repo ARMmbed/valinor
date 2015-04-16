@@ -70,6 +70,8 @@ def main():
 
     project_settings = ProjectSettings()
     update.update(None, False, False, project_settings)
+
+    available_ides = ide_detection.available()
     ide_tool = args.ide_tool
     if not ide_tool:
         ide_tool = ide_detection.select(available_ides, args.target, project_settings)
@@ -116,8 +118,6 @@ def main():
         'misc': [],
         'target': args.target
     }
-    workspace = Workspace(None)
-    workspace.load_definitions()
 
     exporter = tool.ToolsSupported().get_value(ide_tool, 'exporter')
     # generate debug project files (if necessary)
