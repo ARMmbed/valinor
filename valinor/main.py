@@ -102,7 +102,7 @@ def main():
         'name': file_base_name,     # project name
         'core': '',                 # core
         'linker_file': '',          # linker command file
-        'build_dir' : 'source',
+        'build_dir' : projectfile_dir,
         'include_paths': [],        # include paths
         'source_paths': [],         # source paths
         'source_files_c': [],       # c source files
