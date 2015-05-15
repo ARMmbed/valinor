@@ -69,7 +69,7 @@ def main():
         sys.exit(1)
 
     project_settings = ProjectSettings()
-    update.update(None, False, False, project_settings)
+    update.update(False, project_settings)
 
     available_ides = ide_detection.available()
     ide_tool = args.ide_tool
@@ -102,6 +102,7 @@ def main():
         'name': file_base_name,     # project name
         'core': '',                 # core
         'linker_file': '',          # linker command file
+        'build_dir' : 'source',
         'include_paths': [],        # include paths
         'source_paths': [],         # source paths
         'source_files_c': [],       # c source files
@@ -114,7 +115,10 @@ def main():
             'name': '.' + os.path.sep,
             'path' : projectfile_dir
         },
-        'output_dir': os.path.relpath(executable_dir, projectfile_dir) + os.path.sep,
+        'output_dir': {
+            'rel_path' : '',
+            'path' : os.path.relpath(executable_dir, projectfile_dir) + os.path.sep,
+        },
         'misc': [],
         'target': args.target
     }
