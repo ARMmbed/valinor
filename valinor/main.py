@@ -109,8 +109,8 @@ def main():
         'source_files_c': [],       # c source files
         'source_files_cpp': [],     # c++ source files
         'source_files_s': [],       # assembly source files
-        'source_files_obj': [],     # object files
-        'source_files_lib': [],     # libraries
+        'source_files_obj': [{}],   # object files
+        'source_files_lib': [{}],   # libraries
         'macros': [],               # macros (defines)
         'project_dir': {
             'name': '.' + os.path.sep,
@@ -120,8 +120,9 @@ def main():
             'rel_path' : '',
             'path' : os.path.relpath(executable_dir, projectfile_dir) + os.path.sep,
         },
-        'misc': [],
-        'target': args.target
+        'target': args.target,  # target
+        'template' : '',        # tool template
+        'output_type': 'exe',   # output type, default to exe
     }
 
     exporter = tool.ToolsSupported().get_value(ide_tool, 'exporter')
