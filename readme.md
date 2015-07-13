@@ -39,6 +39,6 @@ the chip or board on your target):
 
 ```json
     "scripts":{
-        "debug": ["valinor", "--target", "K64F", "$program"]
+        "debug": ["valinor", "--target", "frdm-k64f", "$program"]
     }
 ```
