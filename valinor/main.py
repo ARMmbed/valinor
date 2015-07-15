@@ -17,6 +17,7 @@ import argparse
 import os
 import sys
 import pkg_resources
+import shutil
 
 import logging_setup
 import ide_detection
@@ -123,7 +124,11 @@ def main():
     # perform any modifications to the executable itself that are necessary to
     # debug it (for example, to debug an ELF with Keil uVision, it must be
     # renamed to have the .axf extension)
-    executable = project.fixup_executable(args.executable, ide_tool)
+    executable = args.executable
+    if ide_tool == 'uvision':
+        new_exe_path = args.executable + '.axf'
+        shutil.copy(args.executable, new_exe_path)
+        executable = new_exe_path
     projectfiles = project.get_generated_project_files(ide_tool)
     if not projectfiles:
         logging.error("failed to generate project files")
