@@ -103,10 +103,10 @@ def main():
     project_data = {
         'common': {
             'target': [args.target],  # target
-            'build_dir': [projectfile_dir],
+            'build_dir': [''],
             'debugger': ['cmsis-dap'],   # TODO: find out what debugger is connected
             'linker_file': ['None'],
-            'export_dir': [projectfile_dir],
+            'export_dir': ['.' + os.path.sep + projectfile_dir],
             'output_dir': {
                 'rel_path' : [''],
                 'path' : [os.path.relpath(executable_dir, projectfile_dir) + os.path.sep],
