@@ -86,7 +86,7 @@ def main():
     if ide_tool is None:
         logging.error(
             'No IDE tool available for target "%s". Please see '+
-            'https://github.com/0xc0170/project_generator for details '+
+            'https://github.com/project-generator/project_generator for details '+
             'on adding support.', args.target
         )
         sys.exit(1)
