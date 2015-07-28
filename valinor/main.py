@@ -21,7 +21,7 @@ import shutil
 
 import logging_setup
 import ide_detection
-from project_generator import tool, update
+from project_generator import tool
 from project_generator.project import Project
 from project_generator.workspace import PgenWorkspace
 from project_generator.settings import ProjectSettings
@@ -72,7 +72,6 @@ def main():
         sys.exit(1)
 
     project_settings = ProjectSettings()
-    update.update(False, project_settings)
 
     available_ides = ide_detection.available()
     ide_tool = args.ide_tool
