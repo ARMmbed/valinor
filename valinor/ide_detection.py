@@ -123,7 +123,7 @@ def select(available_ides, target, project_settings):
     for ide in available_ides:
         tool = tools_supported.ToolsSupported().get_tool(ide)
         if not tool.is_supported_by_default(target):
-            if targets.Targets(project_settings.get_env_settings('definitions')).is_supported(target, tool):
+            if targets.Targets(project_settings.get_env_settings('definitions')).is_supported(target, ide):
                 possible_ides.append(ide)
         else:
             possible_ides.append(ide)
