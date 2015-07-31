@@ -17,10 +17,12 @@ import argparse
 import os
 import sys
 import pkg_resources
+import shutil
 
 import logging_setup
 import ide_detection
-from project_generator import tool, update
+from project_generator.project import Project
+from project_generator.generate import Generator
 from project_generator.settings import ProjectSettings
 
 def main():
@@ -69,7 +71,6 @@ def main():
         sys.exit(1)
 
     project_settings = ProjectSettings()
-    update.update(None, False, False, project_settings)
 
     available_ides = ide_detection.available()
     ide_tool = args.ide_tool
@@ -84,7 +85,7 @@ def main():
     if ide_tool is None:
         logging.error(
             'No IDE tool available for target "%s". Please see '+
-            'https://github.com/0xc0170/project_generator for details '+
+            'https://github.com/project-generator/project_generator for details '+
             'on adding support.', args.target
         )
         sys.exit(1)
@@ -98,46 +99,46 @@ def main():
     # pass empty data to the tool for things we don't care about when just
     # debugging (in the future we could add source files by reading the debug
     # info from the file being debugged)
-    data = {
-        'name': file_base_name,     # project name
-        'core': '',                 # core
-        'linker_file': '',          # linker command file
-        'include_paths': [],        # include paths
-        'source_paths': [],         # source paths
-        'source_files_c': [],       # c source files
-        'source_files_cpp': [],     # c++ source files
-        'source_files_s': [],       # assembly source files
-        'source_files_obj': [],     # object files
-        'source_files_lib': [],     # libraries
-        'macros': [],               # macros (defines)
-        'project_dir': {
-            'name': '.' + os.path.sep,
-            'path' : projectfile_dir
-        },
-        'output_dir': os.path.relpath(executable_dir, projectfile_dir) + os.path.sep,
-        'misc': [],
-        'target': args.target
+    project_data = {
+        'common': {
+            'target': [args.target],  # target
+            'build_dir': [''],
+            'debugger': ['cmsis-dap'],   # TODO: find out what debugger is connected
+            'linker_file': ['None'],
+            'export_dir': ['.' + os.path.sep + projectfile_dir],
+            'output_dir': {
+                'rel_path' : [''],
+                'path' : [os.path.relpath(executable_dir, projectfile_dir) + os.path.sep],
+            }
+        }
     }
 
-    exporter = tool.ToolsSupported().get_value(ide_tool, 'exporter')
-    # generate debug project files (if necessary)
-    projectfile_path, projectfiles = tool.export(exporter, data, ide_tool, project_settings)
-    if projectfile_path is None:
-        logging.error("failed to generate project files")
-        sys.exit(1)
+    projects = {
+        'projects' : {}
+    }
+    project = Project(file_base_name, [project_data], Generator(projects))
+    project.export(ide_tool, False)
 
     # perform any modifications to the executable itself that are necessary to
     # debug it (for example, to debug an ELF with Keil uVision, it must be
     # renamed to have the .axf extension)
-    executable = tool.fixup_executable(exporter, args.executable, ide_tool)
+    executable = args.executable
+    if ide_tool == 'uvision':
+        new_exe_path = args.executable + '.axf'
+        shutil.copy(args.executable, new_exe_path)
+        executable = new_exe_path
+    projectfiles = project.get_generated_project_files(ide_tool)
+    if not projectfiles:
+        logging.error("failed to generate project files")
+        sys.exit(1)
 
     if args.start_session:
         launch_fn = ide_detection.get_launcher(ide_tool)
         if launch_fn is not None:
-            launch_fn(projectfiles, executable)
+            launch_fn(projectfiles['files'], executable)
         else:
             logging.warning('failed to open IDE')
-            print 'project files have been generated in:', os.path.normpath(projectfile_path)
+            print 'project files have been generated in:', os.path.normpath(projectfiles['path'])
     else:
-        print 'project files have been generated in:', os.path.normpath(projectfile_path)
+        print 'project files have been generated in:', os.path.normpath(projectfiles['path'])
 

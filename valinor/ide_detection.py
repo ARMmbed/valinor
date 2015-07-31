@@ -10,7 +10,7 @@ import os
 
 from distutils.spawn import find_executable
 
-from project_generator import tool
+from project_generator import targets, tools_supported
 
 from gdb import launcher as gdb_launcher
 from gdb import arm_none_eabi_launcher as arm_none_eabi_gdb_launcher
@@ -119,9 +119,14 @@ def available():
 def select(available_ides, target, project_settings):
     ''' select the preferred option out of the available IDEs to debug the
     selected target, or None '''
-
-    possible_ides = [x for x in available_ides if tool.target_supported(
-        tool.ToolsSupported().get_value(x, 'exporter'), target, x, project_settings)]
+    possible_ides = []
+    for ide in available_ides:
+        tool = tools_supported.ToolsSupported().get_tool(ide)
+        if not tool.is_supported_by_default(target):
+            if targets.Targets(project_settings.get_env_settings('definitions')).is_supported(target, ide):
+                possible_ides.append(ide)
+        else:
+            possible_ides.append(ide)
 
     if len(possible_ides):
         return sorted(possible_ides, key=lambda x:IDE_Preference.index(x))[0]
