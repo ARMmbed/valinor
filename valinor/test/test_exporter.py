@@ -16,7 +16,7 @@ from nose.tools import *
 from os.path import abspath
 import sys
 
-from project_generator.tools.builder import Builder
+from project_generator.tools.tool import Builder
 
 # Makes sure that exporting using generic builder will fail.
 @raises(NotImplementedError)
