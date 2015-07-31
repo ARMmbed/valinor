@@ -10,7 +10,7 @@ import os
 
 from distutils.spawn import find_executable
 
-from project_generator import targets, tools_supported, targets
+from project_generator import targets, tools_supported
 
 from gdb import launcher as gdb_launcher
 from gdb import arm_none_eabi_launcher as arm_none_eabi_gdb_launcher

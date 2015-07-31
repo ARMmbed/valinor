@@ -21,9 +21,8 @@ import shutil
 
 import logging_setup
 import ide_detection
-from project_generator import tool
 from project_generator.project import Project
-from project_generator.workspace import PgenWorkspace
+from project_generator.generate import Generator
 from project_generator.settings import ProjectSettings
 
 def main():
@@ -117,7 +116,7 @@ def main():
     projects = {
         'projects' : {}
     }
-    project = Project(file_base_name, [project_data], PgenWorkspace(projects))
+    project = Project(file_base_name, [project_data], Generator(projects))
     project.export(ide_tool, False)
 
     # perform any modifications to the executable itself that are necessary to
