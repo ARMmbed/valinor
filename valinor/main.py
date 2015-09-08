@@ -70,6 +70,11 @@ def main():
         logging.error('cannot debug file "%s" that does not exist' % args.executable)
         sys.exit(1)
 
+    # Get setttings and generator (it updates targets def prior select)
+    projects = {
+        'projects' : {}
+    }
+    generator = Generator(projects)
     project_settings = ProjectSettings()
 
     available_ides = ide_detection.available()
@@ -113,10 +118,7 @@ def main():
         }
     }
 
-    projects = {
-        'projects' : {}
-    }
-    project = Project(file_base_name, [project_data], Generator(projects))
+    project = Project(file_base_name, [project_data], generator)
     project.export(ide_tool, False)
 
     # perform any modifications to the executable itself that are necessary to
