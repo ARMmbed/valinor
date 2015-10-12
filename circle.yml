@@ -1,0 +1,16 @@
+dependencies:
+  pre:
+    # we use tox to run tests:
+    - pip install tox
+
+  override:
+    - pyenv local 2.7.10 3.3.3 3.4.3 3.5.0
+    # pre-build the tox environments, so we can cache them:
+    - tox --notest
+
+  cache_directories:
+    - ".tox"
+
+test:
+  override:
+    - tox
