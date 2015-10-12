@@ -6,7 +6,7 @@
 # standard library modules, , ,
 import logging
 
-# colorama, BSD 3-Clause license, cross-platform terminal colours, pip install colorama 
+# colorama, BSD 3-Clause license, cross-platform terminal colours, pip install colorama
 import colorama
 
 # colorama replaces stdout and stderr with objects that do switch colour
@@ -68,7 +68,7 @@ def init(level=0, enable_subsystems=[]):
     handler = logging.StreamHandler()
     handler.setFormatter(Formatter())
     root.addHandler(handler)
-    
+
     # set appropriate levels on subsystem loggers - maybe selective logging
     # should use filters instead?
     if enable_subsystems and len(enable_subsystems):
