@@ -25,11 +25,11 @@ class TestCLIOutputDirectory(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.workingdir)
-    
+
     def runCheck(self, args):
         out, err, status = cli.run(args, cwd = self.workingdir)
-        print out
-        print err
+        print(out)
+        print(err)
         self.assertEqual(status, 0)
         return err or out
 

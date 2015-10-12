@@ -19,8 +19,8 @@ import sys
 import pkg_resources
 import shutil
 
-import logging_setup
-import ide_detection
+import valinor.logging_setup as logging_setup
+import valinor.ide_detection as ide_detection
 from project_generator.project import Project
 from project_generator.generate import Generator
 from project_generator.settings import ProjectSettings
@@ -53,7 +53,7 @@ def main():
              'files to enable debugging, and print the command that would be '+
              'necessary to proceed.'
     )
-    
+
     p.add_argument('--target', dest='target', required=True,
         help='The target board to generate a project file for (e.g. K64F).'
     )
@@ -140,7 +140,7 @@ def main():
             launch_fn(projectfiles['files'], executable)
         else:
             logging.warning('failed to open IDE')
-            print 'project files have been generated in:', os.path.normpath(projectfiles['path'])
+            print('project files have been generated in: %s' % os.path.normpath(projectfiles['path']))
     else:
-        print 'project files have been generated in:', os.path.normpath(projectfiles['path'])
+        print('project files have been generated in: %s' % os.path.normpath(projectfiles['path']))
 

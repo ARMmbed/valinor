@@ -12,8 +12,8 @@ from distutils.spawn import find_executable
 
 from project_generator import targets, tools_supported
 
-from gdb import launcher as gdb_launcher
-from gdb import arm_none_eabi_launcher as arm_none_eabi_gdb_launcher
+from valinor.gdb import launcher as gdb_launcher
+from valinor.gdb import arm_none_eabi_launcher as arm_none_eabi_gdb_launcher
 
 # cache the detected IDEs, (map of ide name to a function(projectfiles,
 # executable) that will launch it)
@@ -93,7 +93,7 @@ def _ensure_IDEs_scanned():
     global IDEs_Scanned, IDE_Launchers
     if IDEs_Scanned:
         return
-    
+
     # !!! could scan in parallel, should be worth it as scanners are
     # likely highly io-bound
     for ide, (scanner, launcher) in IDE_Scanners.items():

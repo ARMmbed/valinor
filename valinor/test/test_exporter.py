@@ -13,8 +13,6 @@
 # limitations under the License.
 
 from nose.tools import *
-from os.path import abspath
-import sys
 
 from project_generator.tools.tool import Builder
 
