@@ -13,7 +13,7 @@ def read(fname):
 
 setup(
     name = "valinor",
-    version = "0.0.9",
+    version = "0.0.10",
     author = 'Martin Kojtal, Matthew Else, James Crosby',
     author_email = "c0170@rocketmail.com, matthewelse1997@gmail.com, James.Crosby@arm.com",
     description = ("Generate IDE project files to debug ELF files."),
