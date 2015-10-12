@@ -9,7 +9,10 @@ import logging
 import multiprocessing
 import signal
 import traceback
-import Queue
+try:
+    import Queue
+except ImportError:
+    import queue as Queue
 
 logger = logging.getLogger('gdb')
 
