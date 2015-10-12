@@ -81,8 +81,12 @@ def arm_none_eabi_launcher(gdb_exe):
         # itself:
         msg = None
         while msg != 'alive':
-            msg = queue.get()
-            if msg == 'dead':
+            try:
+                msg = queue.get(timeout=1.0)
+            except Queue.Empty as e:
+                msg = None
+                pass
+            if msg == 'dead' or not p.is_alive():
                 raise Exception('gdb server failed to start')
         gdb_launcher(projectfiles, executable)
         queue.put('kill')
