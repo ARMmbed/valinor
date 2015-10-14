@@ -23,9 +23,6 @@ def _ignoreSignal(signum, frame):
 
 def _launchPyOCDGDBServer(msg_queue):
     logger.info('preparing PyOCD gdbserver...')
-    # ignore Ctrl-C, so we don't interrupt the GDB server when the
-    # being-debugged program is being stopped:
-    #signal.signal(signal.SIGINT, _ignoreSignal);
     from pyOCD.gdbserver import GDBServer
     from pyOCD.board import MbedBoard
     gdb = None
