@@ -1,4 +1,4 @@
 [run]
-concurrency = multiprocessing
+concurrency = thread
 parallel = True
 include = ./valinor/*
