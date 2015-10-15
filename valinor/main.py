@@ -137,10 +137,11 @@ def main():
     if args.start_session:
         launch_fn = ide_detection.get_launcher(ide_tool)
         if launch_fn is not None:
-            launch_fn(projectfiles['files'], executable)
+            try:
+                launch_fn(projectfiles['files'], executable)
+            except Exception as e:
+                logging.error('failed to launch debugger: %s', e)
         else:
             logging.warning('failed to open IDE')
-            print('project files have been generated in: %s' % os.path.normpath(projectfiles['path']))
-    else:
-        print('project files have been generated in: %s' % os.path.normpath(projectfiles['path']))
+    print('project files have been generated in: %s' % os.path.normpath(projectfiles['path']))
 
