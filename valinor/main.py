@@ -122,8 +122,8 @@ def main():
         }
     }
 
-    project = Project(file_base_name, [project_data], generator)
-    project.export(ide_tool, False)
+    project = Project(file_base_name, [project_data], project_settings)
+    project.generate(ide_tool)
 
     # perform any modifications to the executable itself that are necessary to
     # debug it (for example, to debug an ELF with Keil uVision, it must be
