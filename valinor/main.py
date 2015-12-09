@@ -21,6 +21,7 @@ import shutil
 
 import valinor.logging_setup as logging_setup
 import valinor.ide_detection as ide_detection
+import valinor.elf as elf
 from project_generator.project import Project
 from project_generator.generate import Generator
 from project_generator.settings import ProjectSettings
@@ -101,6 +102,8 @@ def main():
 
     projectfile_dir = args.project_dir or executable_dir
 
+    files = elf.get_files_from_executable(args.executable)
+
     # pass empty data to the tool for things we don't care about when just
     # debugging (in the future we could add source files by reading the debug
     # info from the file being debugged)
@@ -114,7 +117,8 @@ def main():
             'output_dir': {
                 'rel_path' : [''],
                 'path' : [os.path.relpath(executable_dir, projectfile_dir) + os.path.sep],
-            }
+            },
+            'sources': {'Source_Files':[f for f in files]},
         }
     }
 
