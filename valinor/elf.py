@@ -14,10 +14,16 @@
 import logging
 
 from elftools.elf.elffile import ELFFile
+from elftools.common.exceptions import ELFError
 
 def get_files_from_executable(filename):
     with open(filename, 'rb') as f:
-        elffile = ELFFile(f)
+        # ELFFile looks for magic number, if there's none, ELFError is raised
+        try:
+            elffile = ELFFile(f)
+        except ELFError:
+            logging.info("%s is invalid elf file" % filename)
+            return []
 
         if not elffile.has_dwarf_info():
             logging.info("File does not have dwarf info, no sources in the project file")
