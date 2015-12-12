@@ -10,7 +10,8 @@ import os
 
 from distutils.spawn import find_executable
 
-from project_generator import targets, tools_supported
+from project_generator import tools_supported
+from project_generator_definitions.definitions import ProGenDef
 
 from valinor.gdb import launcher as gdb_launcher
 from valinor.gdb import arm_none_eabi_launcher as arm_none_eabi_gdb_launcher
@@ -123,7 +124,7 @@ def select(available_ides, target, project_settings):
     for ide in available_ides:
         tool = tools_supported.ToolsSupported().get_tool(ide)
         if not tool.is_supported_by_default(target):
-            if targets.Targets(project_settings.get_env_settings('definitions')).is_supported(target, ide):
+            if ProGenDef(ide).is_supported(target):
                 possible_ides.append(ide)
         else:
             possible_ides.append(ide)
