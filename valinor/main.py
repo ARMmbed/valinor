@@ -118,7 +118,7 @@ def main():
                 'rel_path' : [''],
                 'path' : [os.path.relpath(executable_dir, projectfile_dir) + os.path.sep],
             },
-            'sources': {'Source_Files':[f for f in files]},
+            'sources': {'Source_Files':sorted([f for f in files], key=lambda file: os.path.basename(file))},
         }
     }
 
