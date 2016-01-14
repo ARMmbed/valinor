@@ -110,7 +110,7 @@ def main():
     project_data = {
         'common': {
             'target': [args.target],  # target
-            'build_dir': [''],
+            'build_dir': ['.'],
             'debugger': ['cmsis-dap'],   # TODO: find out what debugger is connected
             'linker_file': ['None'],
             'export_dir': ['.' + os.path.sep + projectfile_dir],
@@ -118,7 +118,7 @@ def main():
                 'rel_path' : [''],
                 'path' : [os.path.relpath(executable_dir, projectfile_dir) + os.path.sep],
             },
-            'sources': {'Source_Files':[f for f in files]},
+            'sources': {'Source_Files':sorted([f for f in files], key=lambda file: os.path.basename(file))},
         }
     }
 
