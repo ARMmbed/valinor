@@ -128,7 +128,7 @@ def main():
     # debug it (for example, to debug an ELF with Keil uVision, it must be
     # renamed to have the .axf extension)
     executable = args.executable
-    if ide_tool == 'uvision':
+    if ide_tool in ('uvision', 'uvision5'):
         new_exe_path = args.executable + '.axf'
         shutil.copy(args.executable, new_exe_path)
         executable = new_exe_path
@@ -147,4 +147,3 @@ def main():
         else:
             logging.warning('failed to open IDE')
     print('project files have been generated in: %s' % os.path.join(os.getcwd(), os.path.normpath(projectfiles['path'])))
-
