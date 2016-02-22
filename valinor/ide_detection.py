@@ -25,7 +25,7 @@ IDEs_Scanned = False
 
 # preferred order of IDEs if multiple are available
 IDE_Preference = [
-    'uvision', 'arm_none_eabi_gdb', 'gdb'
+    'uvision', 'uvision5', 'arm_none_eabi_gdb', 'gdb'
 ]
 
 
@@ -86,6 +86,7 @@ def _uvision_launcher(uvision_exe):
 
 IDE_Scanners = {
               'uvision': (_find_uvision, _uvision_launcher),
+             'uvision5': (_find_uvision, _uvision_launcher),
                   'gdb': (_find_generic_gdb, gdb_launcher),
     'arm_none_eabi_gdb': (_find_arm_none_eabi_gdb, arm_none_eabi_gdb_launcher),
 }
@@ -142,4 +143,3 @@ def get_launcher(ide):
         return IDE_Launchers[ide]
     else:
         return None
-
