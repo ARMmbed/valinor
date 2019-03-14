@@ -13,7 +13,7 @@ def read(fname):
 
 setup(
     name = "valinor",
-    version = "1.1.0",
+    version = "1.1.1",
     author = 'Martin Kojtal, James Crosby',
     author_email = "c0170@rocketmail.com, James.Crosby@arm.com",
     description = ("Generate IDE project files to debug ELF files."),
@@ -37,7 +37,7 @@ setup(
     },
     test_suite = 'nose.collector',
     install_requires=[
-        'pyyaml>=3,<4',
+        'pyyaml>=3,<5',
         'Jinja2>=2.7.0,<3',
         'setuptools',
         'colorama>=0.3,<0.4',
