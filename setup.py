@@ -19,7 +19,7 @@ setup(
     description = ("Generate IDE project files to debug ELF files."),
     license = "Apache-2.0",
     keywords = "debug c cpp project generator embedded",
-    url = "about:blank",
+    url = "https://github.com/ARMmbed/valinor",
     packages=find_packages(),
     package_data={
     },
