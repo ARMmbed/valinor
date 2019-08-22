@@ -37,8 +37,6 @@ setup(
     },
     test_suite = 'nose.collector',
     install_requires=[
-        'pyyaml>=5.1,<6.0',
-        'Jinja2>=2.7.0,<3',
         'setuptools',
         'colorama>=0.3,<0.4',
         'pyOCD>=0.3,<1.0',
